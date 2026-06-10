@@ -1,7 +1,7 @@
 
 import { useFocusEffect, useRouter } from 'expo-router';
-import { useState, useCallback } from 'react';
-import { View, Text, FlatList, StyleSheet, StatusBar, Button } from 'react-native';
+import { useState, useCallback} from 'react';
+import { View, Text, FlatList, StyleSheet, StatusBar, Button, TextInput } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 interface Product { 
@@ -56,8 +56,12 @@ function Item({ item, deleteItem, selectHandle, editItem }: ItemProps) {
 
 export default function HomeScreen() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [searchQuery , setSearchQuery] = useState("");
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
+  const [selectedCategory , setSelectedCategory] = useState("");
   const router = useRouter();
+
+  const CATEGORIES = [...new Set(products.map(item => item.category))]
 
   function editItem(id: number) {
   router.push({
@@ -87,6 +91,11 @@ export default function HomeScreen() {
       fetchData()  
     }, [])
   );
+    
+  const filteredProducts = products.filter((item) =>
+  item.category.toLowerCase().includes(selectedCategory.toLowerCase()) &&
+  item.name.toLowerCase().includes(searchQuery.toLowerCase())
+)
 
   async function deleteItem(id: number) {
     try {
@@ -168,7 +177,23 @@ export default function HomeScreen() {
           accessibilityLabel="Learn more about this purple button"
         />
         <FlatList
-          data={products}
+          data={CATEGORIES}
+          horizontal  // ← горизонтальный скролл
+          keyExtractor={(item, index) => index.toString()}
+          renderItem={({ item }) => (
+            <Button
+              title={item}
+              onPress={() => setSelectedCategory(selectedCategory === item ? "" : item)}
+              color={selectedCategory === item ? 'blue' : 'grey'}
+            />
+          )}
+/>
+        <TextInput
+          onChangeText={( text: string) => setSearchQuery(text)}
+          value={searchQuery}
+        />
+        <FlatList
+          data={filteredProducts}
           numColumns={2}
           columnWrapperStyle={{ justifyContent: 'space-between' }}
           renderItem={({ item }) => <Item item={item} deleteItem={deleteItem} selectHandle={selectHandle} editItem={editItem} />}
