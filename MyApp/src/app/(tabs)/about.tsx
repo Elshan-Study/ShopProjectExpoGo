@@ -1,24 +1,9 @@
-import { StyleSheet, View, Text } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-
+import { View, Text } from "react-native";
 
 export default function AboutScreen() {
-
-    return(
-        <SafeAreaProvider>
-            <View style={styles.safeArea}>
-                <Text style={styles.text}>О приложении</Text>
-            </View>
-        </SafeAreaProvider>
+    return (
+        <View className="p-4 flex-1 items-center justify-center bg-blue-500">
+            <Text className="text-white text-2xl font-bold text-center">О приложении</Text>
+        </View>
     )
 }
-
-const styles = StyleSheet.create({
-    safeArea: {
-        padding: 15,
-        flex: 1, 
-        backgroundColor: '#fff',
-        marginTop: 0,
-    },
-    text: { textAlign: 'center', }
-})
